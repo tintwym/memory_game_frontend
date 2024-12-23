@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "the-memory-game-kotlin"
+rootProject.name = "memory_game_frontend"
 include(":app")
