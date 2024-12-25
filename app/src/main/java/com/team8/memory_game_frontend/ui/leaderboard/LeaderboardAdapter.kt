@@ -13,6 +13,7 @@ class ScoreAdapter(private val scores: List<ScoreResponse>) :
 
     inner class ScoreViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val usernameTextView: TextView = view.findViewById(R.id.usernameTextView)
+        val pointsTextView: TextView = view.findViewById(R.id.pointsTextView)
         val timeTextView: TextView = view.findViewById(R.id.timeTextView)
     }
 
@@ -24,6 +25,7 @@ class ScoreAdapter(private val scores: List<ScoreResponse>) :
     override fun onBindViewHolder(holder: ScoreViewHolder, position: Int) {
         val score = scores[position]
         holder.usernameTextView.text = score.username
+        holder.pointsTextView.text = "Points: ${score.points}"
         holder.timeTextView.text = "Time: ${score.totalSeconds} seconds"
     }
 

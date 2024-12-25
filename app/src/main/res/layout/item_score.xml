@@ -12,7 +12,7 @@
         android:id="@+id/usernameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text="@string/username"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/black" />
@@ -21,7 +21,7 @@
         android:id="@+id/pointsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Points: 0"
+        android:text="@string/points_0"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray" />
 
@@ -29,7 +29,7 @@
         android:id="@+id/timeTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Time: 0 sec"
+        android:text="@string/time_0_sec"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray" />
 </LinearLayout>
