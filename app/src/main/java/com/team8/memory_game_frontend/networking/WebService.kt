@@ -1,4 +1,4 @@
-package com.team8.memory_game_frontend.api
+package com.team8.memory_game_frontend.networking
 
 import retrofit2.Call
 import retrofit2.http.GET

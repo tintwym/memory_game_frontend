@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.team8.memory_game_frontend.R
-import com.team8.memory_game_frontend.api.RetrofitClient
+import com.team8.memory_game_frontend.networking.RetrofitClient
 import com.team8.memory_game_frontend.data.model.request.ScoreRequest
 import com.team8.memory_game_frontend.databinding.ActivityPlayBinding
 import com.team8.memory_game_frontend.ui.leaderboard.LeaderboardActivity
@@ -121,9 +121,10 @@ class PlayActivity : AppCompatActivity() {
         handler.post(object : Runnable {
             override fun run() {
                 val elapsedTime = (System.currentTimeMillis() - startTime) / 1000
-                val minutes = elapsedTime / 60
+                val hours = elapsedTime / 3600
+                val minutes = (elapsedTime % 3600) / 60
                 val seconds = elapsedTime % 60
-                binding.timerTextView.text = "Time: %02d:%02d".format(minutes, seconds)
+                binding.timerTextView.text = "Time: %02d:%02d:%02d".format(hours, minutes, seconds)
 
                 handler.postDelayed(this, 1000)
             }

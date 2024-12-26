@@ -1,5 +1,6 @@
-package com.team8.memory_game_frontend.api
+package com.team8.memory_game_frontend.networking
 
+import com.team8.memory_game_frontend.networking.Api
 import com.team8.memory_game_frontend.utility.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

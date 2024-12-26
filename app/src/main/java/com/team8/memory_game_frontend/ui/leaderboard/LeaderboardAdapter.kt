@@ -47,4 +47,3 @@ class LeaderboardAdapter(private val scores: List<ScoreResponse>) :
 
     override fun getItemCount(): Int = scores.size
 }
-

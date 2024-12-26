@@ -1,4 +1,4 @@
-package com.team8.memory_game_frontend.api
+package com.team8.memory_game_frontend.networking
 
 import com.team8.memory_game_frontend.data.model.request.AuthRequest
 import com.team8.memory_game_frontend.data.model.response.AuthResponse

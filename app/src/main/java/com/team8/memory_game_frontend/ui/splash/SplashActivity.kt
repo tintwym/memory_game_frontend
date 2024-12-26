@@ -2,13 +2,9 @@ package com.team8.memory_game_frontend.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.team8.memory_game_frontend.R
 import com.team8.memory_game_frontend.ui.fetch.FetchActivity
 import com.team8.memory_game_frontend.ui.login.LoginActivity
 

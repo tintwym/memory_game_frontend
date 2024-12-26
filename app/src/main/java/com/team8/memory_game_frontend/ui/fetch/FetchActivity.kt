@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import com.team8.memory_game_frontend.api.WebService
+import com.team8.memory_game_frontend.networking.WebService
 import com.team8.memory_game_frontend.ui.login.LoginActivity
 import com.team8.memory_game_frontend.ui.play.PlayActivity
 import kotlinx.coroutines.withContext

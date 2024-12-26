@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.team8.memory_game_frontend.api.RetrofitClient
+import com.team8.memory_game_frontend.networking.RetrofitClient
 import com.team8.memory_game_frontend.data.model.response.ScoreResponse
 import com.team8.memory_game_frontend.databinding.ActivityLeaderboardBinding
 import com.team8.memory_game_frontend.ui.fetch.FetchActivity

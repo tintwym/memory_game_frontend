@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.team8.memory_game_frontend.R
-import com.team8.memory_game_frontend.api.RetrofitClient
+import com.team8.memory_game_frontend.networking.RetrofitClient
 import com.team8.memory_game_frontend.data.model.request.AuthRequest
 import com.team8.memory_game_frontend.databinding.ActivityLoginBinding
 import com.team8.memory_game_frontend.ui.fetch.FetchActivity
