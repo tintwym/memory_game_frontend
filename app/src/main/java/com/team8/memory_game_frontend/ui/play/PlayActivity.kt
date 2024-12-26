@@ -70,8 +70,8 @@ class PlayActivity : AppCompatActivity() {
         binding.userStatusTextView.text = if (isPaidUser) "Premium User" else "Free User"
         binding.userStatusIcon.setImageResource(if (isPaidUser) R.drawable.ic_premium else R.drawable.ic_free)
         binding.adTextView.visibility = if (isPaidUser) View.GONE else View.VISIBLE
+        binding.purchasePremiumButton.visibility = if (isPaidUser) View.GONE else View.VISIBLE
 
-        // Show Login button for guest users and Logout button for logged-in users
         // Show Login button for guest users and Logout button for logged-in users
         if (username == "Guest") {
             binding.purchasePremiumButton.visibility = View.GONE
