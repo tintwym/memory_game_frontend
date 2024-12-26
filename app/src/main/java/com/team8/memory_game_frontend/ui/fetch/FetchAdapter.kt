@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.team8.memory_game_frontend.R
 
-class ImagesAdapter(
+class FetchAdapter(
     private val onSelectionChanged: (List<String>) -> Unit
-) : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
+) : RecyclerView.Adapter<FetchAdapter.ImageViewHolder>() {
 
     private val imageUrls = mutableListOf<String>()
     private val selectedImages = mutableSetOf<String>()

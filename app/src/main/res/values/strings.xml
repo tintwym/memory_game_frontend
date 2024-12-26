@@ -3,4 +3,11 @@
     <string name="username">Username</string>
     <string name="points_0">Points: 0</string>
     <string name="time_0_sec">Time: 0 sec</string>
+    <string name="free_user">Free User</string>
+    <string name="user_status_icon">User status icon</string>
+    <string name="purchase_premium">Purchase Premium</string>
+    <string name="this_is_a_custom_ad">This is a custom ad.</string>
+    <string name="matches_0">Matches: 0</string>
+    <string name="memory_game">Memory Game</string>
+    <string name="username_guest">Username: Guest</string>
 </resources>

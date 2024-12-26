@@ -1,16 +1,20 @@
 package com.team8.memory_game_frontend.ui.fetch
 
-import ImagesAdapter
+import FetchAdapter
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.team8.memory_game_frontend.R
 import com.team8.memory_game_frontend.databinding.ActivityFetchBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,9 +23,11 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import com.team8.memory_game_frontend.data.api.WebService
+import com.team8.memory_game_frontend.api.WebService
+import com.team8.memory_game_frontend.ui.login.LoginActivity
 import com.team8.memory_game_frontend.ui.play.PlayActivity
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class FetchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFetchBinding
@@ -51,9 +57,6 @@ class FetchActivity : AppCompatActivity() {
         val username = sharedPreferences.getString("username", "Guest")
         binding.welcomeTextView.text = "Welcome, $username!"
 
-        setupRetrofit()
-        setupRecyclerView()
-
         binding.fetchButton.setOnClickListener {
             val enteredUrl = binding.urlEditText.text.toString().trim()
             if (TextUtils.isEmpty(enteredUrl)) {
@@ -72,12 +75,16 @@ class FetchActivity : AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener {
-            val selectedImages = (binding.imagesRecyclerView.adapter as ImagesAdapter).getSelectedImages()
+            val selectedImages = (binding.imagesRecyclerView.adapter as FetchAdapter).getSelectedImages()
             val intent = Intent(this, PlayActivity::class.java).apply {
                 putStringArrayListExtra("selectedImages", ArrayList(selectedImages))
             }
             startActivity(intent)
         }
+
+        setupRetrofit()
+        setupRecyclerView()
+        setupAuthButton()
     }
 
     private fun setupRetrofit() {
@@ -89,7 +96,7 @@ class FetchActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = ImagesAdapter { selectedImages ->
+        val adapter = FetchAdapter { selectedImages ->
             // Enable the "Play" button when 6 images are selected
             binding.playButton.isEnabled = selectedImages.size == 6
             binding.selectionTextView.text = "Image ${selectedImages.size} of 6 selected"
@@ -99,40 +106,45 @@ class FetchActivity : AppCompatActivity() {
     }
 
     private fun fetchImages(url: String) {
-        currentJob?.cancel() // Cancel the current job if a new URL is entered
+        if (currentJob?.isActive == true) {
+            Toast.makeText(this, "Downloading images from new url", Toast.LENGTH_SHORT).show()
+        }
+        currentJob?.cancel()
         currentJob = lifecycleScope.launch(Dispatchers.IO) {
             try {
                 updateUIForLoading()
 
-                // Fetch webpage content
                 val response = webService.fetchPage(url).execute()
                 if (!response.isSuccessful || response.body().isNullOrEmpty()) {
                     throw Exception("Failed to fetch webpage: ${response.message()}")
                 }
 
-                // Parse the webpage to extract image URLs
                 val document = Jsoup.parse(response.body())
                 val imageElements = document.select("img[src]")
                 val imageUrls = imageElements.map { it.absUrl("src") }
-                    .filter { it.isNotBlank() } // Filter out empty URLs
-                    .distinct() // Ensure URLs are unique
-                    .take(20) // Take only the first 20 valid URLs
+                    .filter { it.isNotBlank() }
+                    .distinct()
+                    .take(20)
 
                 if (imageUrls.isEmpty()) {
                     throw Exception("No images found at the specified URL.")
                 }
 
-                // Download and display images
                 imageUrls.forEachIndexed { index, imageUrl ->
-                    if (!isActive) return@forEachIndexed // Exit if the coroutine is cancelled
+                    if (!isActive) return@forEachIndexed // Check for cancellation
 
                     withContext(Dispatchers.Main) {
-                        (binding.imagesRecyclerView.adapter as ImagesAdapter).addImage(imageUrl)
+                        (binding.imagesRecyclerView.adapter as FetchAdapter).addImage(imageUrl)
                         updateProgress(index + 1, imageUrls.size)
                     }
+
+                    // Add artificial delay between image downloads
+                    kotlinx.coroutines.delay(500) // 500ms delay
                 }
 
                 finishLoading()
+            } catch (e: CancellationException) {
+                // Suppress cancellation exceptions explicitly
             } catch (e: Exception) {
                 e.printStackTrace()
                 showError(e.message ?: "Error occurred while fetching images.")
@@ -150,7 +162,7 @@ class FetchActivity : AppCompatActivity() {
             binding.playButton.visibility = View.GONE
 
             // Clear existing images and set the new adapter with the selection listener
-            binding.imagesRecyclerView.adapter = ImagesAdapter { selectedImages ->
+            binding.imagesRecyclerView.adapter = FetchAdapter { selectedImages ->
                 // Enable or disable the Play button based on the selected images count
                 binding.playButton.isEnabled = selectedImages.size == 6
                 binding.selectionTextView.text = "Image ${selectedImages.size} of 6 selected"
@@ -180,5 +192,42 @@ class FetchActivity : AppCompatActivity() {
             Toast.makeText(this@FetchActivity, message, Toast.LENGTH_SHORT).show()
             finishLoading()
         }
+    }
+
+    private fun setupAuthButton() {
+        val username = sharedPreferences.getString("username", "Guest")
+        binding.welcomeTextView.text = "Welcome, $username!"
+
+        if (username == "Guest") {
+            binding.authButton.apply {
+                text = "Login"
+                backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this@FetchActivity, R.color.blue_700))
+                setOnClickListener {
+                    startActivity(Intent(this@FetchActivity, LoginActivity::class.java))
+                    finish()
+                }
+            }
+        } else {
+            binding.authButton.apply {
+                text = "Logout"
+                backgroundTintList = ColorStateList.valueOf(Color.RED)
+                setOnClickListener {
+                    showLogoutConfirmationDialog()
+                }
+            }
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                sharedPreferences.edit().clear().apply()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 }

@@ -14,8 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.team8.memory_game_frontend.R
-import com.team8.memory_game_frontend.data.api.RetrofitClient
-import com.team8.memory_game_frontend.data.model.request.LoginRequest
+import com.team8.memory_game_frontend.api.RetrofitClient
+import com.team8.memory_game_frontend.data.model.request.AuthRequest
 import com.team8.memory_game_frontend.databinding.ActivityLoginBinding
 import com.team8.memory_game_frontend.ui.fetch.FetchActivity
 import com.team8.memory_game_frontend.ui.register.RegisterActivity
@@ -59,6 +59,19 @@ class LoginActivity : AppCompatActivity() {
         val endIndex = startIndex + "Create one!".length
         spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
+        binding.guestButton.setOnClickListener {
+            // Save guest status
+            saveToSecureStorage(
+                userId = "guest",
+                username = "Guest",
+                isPaidUser = false
+            )
+
+            // Navigate to fetch activity
+            startActivity(Intent(this, FetchActivity::class.java))
+            finish()
+        }
+
         binding.registerLink.text = spannableString
         binding.registerLink.movementMethod = LinkMovementMethod.getInstance()
 
@@ -94,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.loginButton.isEnabled = false
 
-                    val response = RetrofitClient.authApi.login(LoginRequest(username, password))
+                    val response = RetrofitClient.api.login(AuthRequest(username, password))
 
                     // Save the login response securely
                     saveToSecureStorage(

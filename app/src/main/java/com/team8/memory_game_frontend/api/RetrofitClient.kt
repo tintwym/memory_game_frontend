@@ -1,4 +1,4 @@
-package com.team8.memory_game_frontend.data.api
+package com.team8.memory_game_frontend.api
 
 import com.team8.memory_game_frontend.utility.Constants
 import retrofit2.Retrofit
@@ -12,7 +12,7 @@ object RetrofitClient {
             .build()
     }
 
-    val authApi: AuthApi by lazy {
-        retrofit.create(AuthApi::class.java)
+    val api: Api by lazy {
+        retrofit.create(Api::class.java)
     }
 }
